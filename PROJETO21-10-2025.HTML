@@ -1,0 +1,1183 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Proposta SPDATA - Hospital Madalena Sofia</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --primary: #0056a6;
+            --secondary: #00a8e8;
+            --accent: #ff6b00;
+            --light: #f8f9fa;
+            --dark: #343a40;
+            --success: #28a745;
+            --transition: all 0.5s ease;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        body {
+            background-color: #f5f7fa;
+            color: var(--dark);
+            overflow-x: hidden;
+        }
+        
+        .presentation-container {
+            width: 100%;
+            min-height: 100vh;
+            position: relative;
+        }
+        
+        .slide {
+            width: 100%;
+            min-height: 100vh;
+            padding: 60px 40px;
+            display: none;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            position: relative;
+            opacity: 0;
+            transition: opacity 0.8s ease;
+        }
+        
+        .slide.active {
+            display: flex;
+            opacity: 1;
+        }
+        
+        .slide-content {
+            max-width: 1000px;
+            width: 100%;
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            padding: 40px;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .slide-header {
+            margin-bottom: 30px;
+            padding-bottom: 20px;
+            border-bottom: 2px solid var(--light);
+        }
+        
+        .slide-title {
+            font-size: 2.5rem;
+            color: var(--primary);
+            margin-bottom: 15px;
+            font-weight: 700;
+        }
+        
+        .slide-subtitle {
+            font-size: 1.2rem;
+            color: var(--secondary);
+            font-weight: 500;
+        }
+        
+        .slide-body {
+            font-size: 1.1rem;
+            line-height: 1.6;
+            margin-bottom: 25px;
+        }
+        
+        .highlight {
+            color: var(--accent);
+            font-weight: 700;
+        }
+        
+        .stats-container {
+            display: flex;
+            justify-content: space-around;
+            flex-wrap: wrap;
+            margin: 30px 0;
+        }
+        
+        .stat-box {
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            color: white;
+            padding: 20px;
+            border-radius: 10px;
+            width: 180px;
+            margin: 10px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+        }
+        
+        .stat-number {
+            font-size: 2.5rem;
+            font-weight: 700;
+            margin-bottom: 5px;
+        }
+        
+        .stat-label {
+            font-size: 0.9rem;
+        }
+        
+        .phase-container {
+            display: flex;
+            justify-content: space-between;
+            margin: 30px 0;
+            flex-wrap: wrap;
+        }
+        
+        .phase-box {
+            flex: 1;
+            min-width: 300px;
+            background: white;
+            border-radius: 10px;
+            padding: 25px;
+            margin: 10px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.08);
+            border-top: 5px solid var(--primary);
+            transition: transform 0.3s ease;
+        }
+        
+        .phase-box:hover {
+            transform: translateY(-5px);
+        }
+        
+        .phase-title {
+            font-size: 1.5rem;
+            color: var(--primary);
+            margin-bottom: 15px;
+            font-weight: 600;
+        }
+        
+        .phase-list {
+            text-align: left;
+            margin: 15px 0;
+        }
+        
+        .phase-list li {
+            margin-bottom: 10px;
+            position: relative;
+            padding-left: 25px;
+        }
+        
+        .phase-list li:before {
+            content: "✓";
+            position: absolute;
+            left: 0;
+            color: var(--success);
+            font-weight: bold;
+        }
+        
+        .effort-highlight {
+            background: linear-gradient(135deg, var(--accent), #ff8c42);
+            color: white;
+            padding: 25px;
+            border-radius: 10px;
+            margin: 25px 0;
+            text-align: center;
+        }
+        
+        .effort-number {
+            font-size: 3rem;
+            font-weight: 700;
+            margin-bottom: 10px;
+        }
+        
+        .effort-label {
+            font-size: 1.2rem;
+        }
+        
+        .investment-container {
+            display: flex;
+            justify-content: space-around;
+            flex-wrap: wrap;
+            margin: 30px 0;
+        }
+        
+        .investment-box {
+            background: white;
+            border-radius: 10px;
+            padding: 25px;
+            margin: 10px;
+            width: 280px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.08);
+            border-left: 5px solid var(--secondary);
+        }
+        
+        .investment-value {
+            font-size: 2rem;
+            font-weight: 700;
+            color: var(--primary);
+            margin: 15px 0;
+        }
+        
+        .investment-detail {
+            font-size: 0.9rem;
+            color: #666;
+        }
+        
+        .timeline {
+            position: relative;
+            max-width: 800px;
+            margin: 40px auto;
+        }
+        
+        .timeline:before {
+            content: '';
+            position: absolute;
+            left: 50%;
+            top: 0;
+            bottom: 0;
+            width: 4px;
+            background: var(--secondary);
+            transform: translateX(-50%);
+        }
+        
+        .timeline-item {
+            position: relative;
+            margin-bottom: 40px;
+            width: 50%;
+            padding: 0 40px;
+        }
+        
+        .timeline-item:nth-child(odd) {
+            left: 0;
+        }
+        
+        .timeline-item:nth-child(even) {
+            left: 50%;
+        }
+        
+        .timeline-content {
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.08);
+            position: relative;
+        }
+        
+        .timeline-content:after {
+            content: '';
+            position: absolute;
+            top: 20px;
+            width: 20px;
+            height: 20px;
+            background: var(--secondary);
+            border-radius: 50%;
+        }
+        
+        .timeline-item:nth-child(odd) .timeline-content:after {
+            right: -50px;
+        }
+        
+        .timeline-item:nth-child(even) .timeline-content:after {
+            left: -50px;
+        }
+        
+        .timeline-title {
+            font-size: 1.3rem;
+            color: var(--primary);
+            margin-bottom: 10px;
+        }
+        
+        .btn-container {
+            display: flex;
+            justify-content: center;
+            margin-top: 30px;
+        }
+        
+        .btn {
+            display: inline-block;
+            padding: 12px 30px;
+            background: var(--primary);
+            color: white;
+            border-radius: 50px;
+            text-decoration: none;
+            font-weight: 600;
+            margin: 0 10px;
+            transition: var(--transition);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+        }
+        
+        .btn:hover {
+            background: var(--secondary);
+            transform: translateY(-3px);
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
+        }
+        
+        .btn-accent {
+            background: var(--accent);
+        }
+        
+        .btn-accent:hover {
+            background: #ff8c42;
+        }
+        
+        .navigation {
+            position: fixed;
+            bottom: 30px;
+            left: 0;
+            right: 0;
+            display: flex;
+            justify-content: center;
+            z-index: 100;
+        }
+        
+        .nav-btn {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            background: var(--primary);
+            color: white;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin: 0 10px;
+            cursor: pointer;
+            transition: var(--transition);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+        }
+        
+        .nav-btn:hover {
+            background: var(--secondary);
+            transform: scale(1.1);
+        }
+        
+        .progress-bar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            height: 5px;
+            background: var(--accent);
+            width: 0%;
+            transition: width 0.3s ease;
+            z-index: 101;
+        }
+        
+        .logo {
+            max-width: 200px;
+            margin-bottom: 20px;
+        }
+        
+        .contact-info {
+            margin-top: 30px;
+            font-size: 1rem;
+        }
+        
+        .contact-info a {
+            color: var(--primary);
+            text-decoration: none;
+        }
+        
+        .contact-info a:hover {
+            text-decoration: underline;
+        }
+        
+        .payment-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 25px 0;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+        }
+        
+        .payment-table th {
+            background: var(--primary);
+            color: white;
+            padding: 15px;
+            text-align: center;
+        }
+        
+        .payment-table td {
+            padding: 15px;
+            text-align: center;
+            border-bottom: 1px solid #eee;
+        }
+        
+        .payment-table tr:nth-child(even) {
+            background: #f9f9f9;
+        }
+        
+        .payment-table tr:hover {
+            background: #f1f7ff;
+        }
+        
+        .process-flow {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin: 40px 0;
+            flex-wrap: wrap;
+        }
+        
+        .process-step {
+            flex: 1;
+            min-width: 150px;
+            text-align: center;
+            padding: 20px 10px;
+            position: relative;
+        }
+        
+        .process-step:not(:last-child):after {
+            content: '→';
+            position: absolute;
+            right: -15px;
+            top: 50%;
+            transform: translateY(-50%);
+            font-size: 1.5rem;
+            color: var(--secondary);
+        }
+        
+        .step-icon {
+            width: 70px;
+            height: 70px;
+            background: var(--primary);
+            color: white;
+            border-radius: 50%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin: 0 auto 15px;
+            font-size: 1.5rem;
+        }
+        
+        .step-title {
+            font-weight: 600;
+            margin-bottom: 10px;
+            color: var(--primary);
+        }
+        
+        .step-desc {
+            font-size: 0.9rem;
+            color: #666;
+        }
+        
+        @media (max-width: 768px) {
+            .slide {
+                padding: 40px 20px;
+            }
+            
+            .slide-content {
+                padding: 25px;
+            }
+            
+            .slide-title {
+                font-size: 2rem;
+            }
+            
+            .phase-container, .investment-container {
+                flex-direction: column;
+                align-items: center;
+            }
+            
+            .phase-box, .investment-box {
+                width: 100%;
+                max-width: 400px;
+            }
+            
+            .timeline:before {
+                left: 30px;
+            }
+            
+            .timeline-item {
+                width: 100%;
+                padding-left: 70px;
+                padding-right: 20px;
+            }
+            
+            .timeline-item:nth-child(even) {
+                left: 0;
+            }
+            
+            .timeline-content:after {
+                left: -40px !important;
+            }
+            
+            .process-step:not(:last-child):after {
+                display: none;
+            }
+            
+            .process-step {
+                min-width: 100%;
+                margin-bottom: 30px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="progress-bar"></div>
+    
+    <div class="presentation-container">
+        <!-- Slide 1: Abertura -->
+        <div class="slide active" id="slide1">
+            <div class="slide-content">
+                <div class="slide-header">
+                    <h1 class="slide-title">Transformando a Gestão Hospitalar</h1>
+                    <p class="slide-subtitle">Proposta de Implantação SPDATA - Hospital Madalena Sofia</p>
+                </div>
+                <div class="slide-body">
+                    <p>Mais do que tecnologia, entregamos <span class="highlight">experiência, metodologia e resultados</span> para elevar o padrão de gestão do seu hospital.</p>
+                    
+                    <div class="stats-container">
+                        <div class="stat-box">
+                            <div class="stat-number">36</div>
+                            <div class="stat-label">Anos de Experiência</div>
+                        </div>
+                        <div class="stat-box">
+                            <div class="stat-number">600+</div>
+                            <div class="stat-label">Clientes Atendidos</div>
+                        </div>
+                        <div class="stat-box">
+                            <div class="stat-number">18</div>
+                            <div class="stat-label">Estados + DF</div>
+                        </div>
+                    </div>
+                    
+                    <p>Esta apresentação mostrará o <span class="highlight">trabalho dedicado</span> por trás de cada etapa da implantação e como isso se traduz em <span class="highlight">resultados tangíveis</span> para o Hospital Madalena Sofia.</p>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Slide 2: Quem Somos -->
+        <div class="slide" id="slide2">
+            <div class="slide-content">
+                <div class="slide-header">
+                    <h1 class="slide-title">Excelência em Gestão Hospitalar</h1>
+                    <p class="slide-subtitle">Há mais de 3 décadas transformando processos em resultados</p>
+                </div>
+                <div class="slide-body">
+                    <p>A <span class="highlight">SPDATA</span> não é apenas uma empresa de tecnologia - somos <span class="highlight">parceiros no cuidado e na excelência operacional</span>.</p>
+                    
+                    <div class="stats-container">
+                        <div class="stat-box">
+                            <div class="stat-number">100%</div>
+                            <div class="stat-label">Nacional</div>
+                        </div>
+                        <div class="stat-box">
+                            <div class="stat-number">277</div>
+                            <div class="stat-label">Municípios</div>
+                        </div>
+                        <div class="stat-box">
+                            <div class="stat-number">36</div>
+                            <div class="stat-label">Anos no Mercado</div>
+                        </div>
+                    </div>
+                    
+                    <p>Nossa missão é clara: <span class="highlight">elevar o padrão de gestão nas instituições de saúde</span>, promovendo a sustentabilidade do seu negócio através de tecnologia e expertise.</p>
+                    
+                    <p>Valorizamos o relacionamento próximo com nossos clientes, entendendo suas necessidades e superando expectativas a cada passo do caminho.</p>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Slide 3: Desafio e Objetivo -->
+        <div class="slide" id="slide3">
+            <div class="slide-content">
+                <div class="slide-header">
+                    <h1 class="slide-title">Desafio: Integrar, Controlar e Evoluir</h1>
+                    <p class="slide-subtitle">Entendendo as necessidades do Hospital Madalena Sofia</p>
+                </div>
+                <div class="slide-body">
+                    <p>Os hospitais modernos enfrentam desafios complexos que vão além da tecnologia:</p>
+                    
+                    <div class="phase-container">
+                        <div class="phase-box">
+                            <h3 class="phase-title">Fragmentação</h3>
+                            <ul class="phase-list">
+                                <li>Processos administrativos desconectados</li>
+                                <li>Dificuldade na consolidação de informações</li>
+                                <li>Falta de integração entre setores</li>
+                            </ul>
+                        </div>
+                        
+                        <div class="phase-box">
+                            <h3 class="phase-title">Visibilidade Limitada</h3>
+                            <ul class="phase-list">
+                                <li>Indicadores gerenciais incompletos</li>
+                                <li>Dificuldade no controle de custos</li>
+                                <li>Falta de rastreabilidade dos processos</li>
+                            </ul>
+                        </div>
+                    </div>
+                    
+                    <p>Nosso objetivo é criar uma <span class="highlight">base única de gestão</span> que una operação, finanças e estratégia, permitindo eficiência operacional, segurança e inteligência na tomada de decisões.</p>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Slide 4: Metodologia de Implantação -->
+        <div class="slide" id="slide4">
+            <div class="slide-content">
+                <div class="slide-header">
+                    <h1 class="slide-title">Metodologia de Implantação</h1>
+                    <p class="slide-subtitle">Um processo estruturado para o sucesso</p>
+                </div>
+                <div class="slide-body">
+                    <p>Nossa metodologia garante uma transição suave e eficiente para o novo sistema, com <span class="highlight">acompanhamento em todas as etapas</span>.</p>
+                    
+                    <div class="process-flow">
+                        <div class="process-step">
+                            <div class="step-icon">1</div>
+                            <div class="step-title">Planejamento</div>
+                            <div class="step-desc">Definir escopo, ações, cronograma e equipe de projeto</div>
+                        </div>
+                        
+                        <div class="process-step">
+                            <div class="step-icon">2</div>
+                            <div class="step-title">Avaliação</div>
+                            <div class="step-desc">Identificação de requisitos específicos e equipe interna</div>
+                        </div>
+                        
+                        <div class="process-step">
+                            <div class="step-icon">3</div>
+                            <div class="step-title">Configuração</div>
+                            <div class="step-desc">Instalação e configuração do sistema conforme requisitos</div>
+                        </div>
+                        
+                        <div class="process-step">
+                            <div class="step-icon">4</div>
+                            <div class="step-title">Treinamento</div>
+                            <div class="step-desc">Validação dos dados e treinamento de utilização</div>
+                        </div>
+                    </div>
+                    
+                    <div class="process-flow">
+                        <div class="process-step">
+                            <div class="step-icon">5</div>
+                            <div class="step-title">Go-Live</div>
+                            <div class="step-desc">Início da utilização com acompanhamento dedicado</div>
+                        </div>
+                        
+                        <div class="process-step">
+                            <div class="step-icon">6</div>
+                            <div class="step-title">Validação</div>
+                            <div class="step-desc">Avaliar aderência dos processos e indicadores</div>
+                        </div>
+                        
+                        <div class="process-step">
+                            <div class="step-icon">7</div>
+                            <div class="step-title">Auditoria</div>
+                            <div class="step-desc">Auditorias periódicas para aprimoramento contínuo</div>
+                        </div>
+                        
+                        <div class="process-step">
+                            <div class="step-icon">8</div>
+                            <div class="step-title">Sustentabilidade</div>
+                            <div class="step-desc">Monitoramento contínuo e suporte especializado</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Slide 5: Fase 1 - Esforço e Detalhes -->
+        <div class="slide" id="slide5">
+            <div class="slide-content">
+                <div class="slide-header">
+                    <h1 class="slide-title">FASE 1: O Alicerce Operacional</h1>
+                    <p class="slide-subtitle">Construindo a base para o sucesso</p>
+                </div>
+                <div class="slide-body">
+                    <p>Esta é a fase mais intensa, onde dedicamos <span class="highlight">mais de 675 horas de trabalho especializado</span> para construir a base operacional do hospital.</p>
+                    
+                    <div class="effort-highlight">
+                        <div class="effort-number">675+ Horas</div>
+                        <div class="effort-label">de trabalho técnico especializado</div>
+                    </div>
+                    
+                    <div class="phase-container">
+                        <div class="phase-box">
+                            <h3 class="phase-title">Módulos Principais</h3>
+                            <ul class="phase-list">
+                                <li>PEP Paperless</li>
+                                <li>Faturamento (AIH, BPA, Convênios)</li>
+                                <li>Financeiro</li>
+                                <li>Controle de Estoque</li>
+                                <li>Recepção Interna e Ambulatorial</li>
+                                <li>Bloco Cirúrgico</li>
+                                <li>Controle de Acesso</li>
+                                <li>Radiologia e Ultrassonografia</li>
+                            </ul>
+                        </div>
+                        
+                        <div class="phase-box">
+                            <h3 class="phase-title">Atividades Desenvolvidas</h3>
+                            <ul class="phase-list">
+                                <li>Levantamento e análise de processos</li>
+                                <li>Parametrização e configuração</li>
+                                <li>Migração e validação de dados</li>
+                                <li>Testes integrados</li>
+                                <li>Capacitação de usuários por setor</li>
+                                <li>Acompanhamento pós-implementação</li>
+                            </ul>
+                        </div>
+                    </div>
+                    
+                    <p><span class="highlight">Taxa de Implantação: R$ 113.050,00</span> - representando o investimento em expertise e metodologia para garantir resultados.</p>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Slide 6: Fase 2 - Esforço e Detalhes -->
+        <div class="slide" id="slide6">
+            <div class="slide-content">
+                <div class="slide-header">
+                    <h1 class="slide-title">FASE 2: Inteligência e Gestão</h1>
+                    <p class="slide-subtitle">Transformando dados em decisões estratégicas</p>
+                </div>
+                <div class="slide-body">
+                    <p>Com a operação estabilizada, investimos em <span class="highlight">inteligência estratégica</span> - são mais <span class="highlight">141 horas de trabalho</span> focado em transformar dados em decisões.</p>
+                    
+                    <div class="effort-highlight">
+                        <div class="effort-number">141+ Horas</div>
+                        <div class="effort-label">de consultoria especializada</div>
+                    </div>
+                    
+                    <div class="phase-container">
+                        <div class="phase-box">
+                            <h3 class="phase-title">Módulos Estratégicos</h3>
+                            <ul class="phase-list">
+                                <li>Gestão de Custos</li>
+                                <li>BI (Business Intelligence)</li>
+                                <li>PACS + Laudos</li>
+                            </ul>
+                        </div>
+                        
+                        <div class="phase-box">
+                            <h3 class="phase-title">Benefícios Esperados</h3>
+                            <ul class="phase-list">
+                                <li>Controle preciso de custos</li>
+                                <li>Indicadores gerenciais em tempo real</li>
+                                <li>Integração de imagens médicas</li>
+                                <li>Tomada de decisão baseada em dados</li>
+                                <li>Otimização de recursos</li>
+                            </ul>
+                        </div>
+                    </div>
+                    
+                    <p><span class="highlight">Taxa de Implantação: R$ 28.675,00</span> - investimento em inteligência para o crescimento sustentável do hospital.</p>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Slide 7: Projeção de Investimento -->
+        <div class="slide" id="slide7">
+            <div class="slide-content">
+                <div class="slide-header">
+                    <h1 class="slide-title">Projeção de Investimento</h1>
+                    <p class="slide-subtitle">Transparência e planejamento financeiro</p>
+                </div>
+                <div class="slide-body">
+                    <p>Oferecemos condições especiais para facilitar o investimento, com <span class="highlight">carência inicial e parcelamento extendido</span>.</p>
+                    
+                    <table class="payment-table">
+                        <thead>
+                            <tr>
+                                <th>Período</th>
+                                <th>Taxa de Implantação</th>
+                                <th>Mensalidade</th>
+                                <th>Total Mensal</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>Meses 1 a 3</td>
+                                <td>R$ 2.952,60</td>
+                                <td>R$ 0,00</td>
+                                <td><strong>R$ 2.952,60</strong></td>
+                            </tr>
+                            <tr>
+                                <td>Meses 4 a 12</td>
+                                <td>R$ 2.952,60</td>
+                                <td>R$ 3.171,00</td>
+                                <td><strong>R$ 6.123,60</strong></td>
+                            </tr>
+                            <tr>
+                                <td>Meses 13 a 48</td>
+                                <td>R$ 2.952,60</td>
+                                <td>R$ 8.982,00</td>
+                                <td><strong>R$ 11.934,60</strong></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                    
+                    <div class="phase-container">
+                        <div class="phase-box">
+                            <h3 class="phase-title">Condições Comerciais</h3>
+                            <ul class="phase-list">
+                                <li><strong>Taxa de Implantação Total:</strong> R$ 141.725,00</li>
+                                <li><strong>Parcelamento:</strong> 48x de R$ 2.952,60</li>
+                                <li><strong>Mensalidade Definitiva:</strong> R$ 8.982,00 (a partir do 13º mês)</li>
+                                <li><strong>Carência:</strong> 3 meses sem mensalidade</li>
+                            </ul>
+                        </div>
+                    </div>
+                    
+                    <p>Para análise detalhada dos valores, <a href="https://alex-2020-pr.github.io/Projeto-Hosp.Madalena-Sofia/" target="_blank">acesse nossa planilha completa</a>.</p>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Slide 8: Auditoria e Validação -->
+        <div class="slide" id="slide8">
+            <div class="slide-content">
+                <div class="slide-header">
+                    <h1 class="slide-title">Auditoria e Validação Contínua</h1>
+                    <p class="slide-subtitle">Garantindo resultados duradouros</p>
+                </div>
+                <div class="slide-body">
+                    <p>Nosso compromisso vai além da implantação, com <span class="highlight">processos contínuos de validação e aprimoramento</span>.</p>
+                    
+                    <div class="phase-container">
+                        <div class="phase-box">
+                            <h3 class="phase-title">Validação</h3>
+                            <ul class="phase-list">
+                                <li>Avaliar e validar processos</li>
+                                <li>Verificar inserção correta de dados</li>
+                                <li>Analisar indicadores de performance</li>
+                                <li>Garantir aderência aos processos</li>
+                            </ul>
+                        </div>
+                        
+                        <div class="phase-box">
+                            <h3 class="phase-title">Auditorias Periódicas</h3>
+                            <ul class="phase-list">
+                                <li>Avaliação de desempenho estratégico</li>
+                                <li>Análise tática e operacional</li>
+                                <li>Identificação de oportunidades</li>
+                                <li>Benchmarking setorial</li>
+                            </ul>
+                        </div>
+                    </div>
+                    
+                    <div class="phase-container">
+                        <div class="phase-box">
+                            <h3 class="phase-title">Aprimoramento Contínuo</h3>
+                            <ul class="phase-list">
+                                <li>Otimização da gestão estratégica</li>
+                                <li>Implementação de melhorias</li>
+                                <li>Capacitação avançada da equipe</li>
+                                <li>Inovação em processos</li>
+                            </ul>
+                        </div>
+                        
+                        <div class="phase-box">
+                            <h3 class="phase-title">Sustentabilidade</h3>
+                            <ul class="phase-list">
+                                <li>Monitoramento contínuo</li>
+                                <li>Suporte especializado</li>
+                                <li>Melhoria contínua</li>
+                                <li>Elevação da sustentabilidade do negócio</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Slide 9: Esforço Total -->
+        <div class="slide" id="slide9">
+            <div class="slide-content">
+                <div class="slide-header">
+                    <h1 class="slide-title">O Que Essas Horas Representam</h1>
+                    <p class="slide-subtitle">Valorizando o trabalho por trás da implantação</p>
+                </div>
+                <div class="slide-body">
+                    <p>O <span class="highlight">total de 816+ horas de trabalho</span> não representa apenas "configuração de sistema". Cada hora investida significa:</p>
+                    
+                    <div class="timeline">
+                        <div class="timeline-item">
+                            <div class="timeline-content">
+                                <h3 class="timeline-title">Experiência Especializada</h3>
+                                <p>Profissionais com anos de atuação em saúde, entendendo as particularidades do setor hospitalar.</p>
+                            </div>
+                        </div>
+                        
+                        <div class="timeline-item">
+                            <div class="timeline-content">
+                                <h3 class="timeline-title">Metodologia Comprovada</h3>
+                                <p>Processos validados em mais de 600 implantações, garantindo eficiência e resultados.</p>
+                            </div>
+                        </div>
+                        
+                        <div class="timeline-item">
+                            <div class="timeline-content">
+                                <h3 class="timeline-title">Acompanhamento Dedicado</h3>
+                                <p>Suporte contínuo durante e após a implantação, assegurando a adaptação da equipe.</p>
+                            </div>
+                        </div>
+                        
+                        <div class="timeline-item">
+                            <div class="timeline-content">
+                                <h3 class="timeline-title">Resultados Garantidos</h3>
+                                <p>Compromisso com o sucesso do projeto e entrega dos benefícios esperados.</p>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <p>A <span class="highlight">taxa de implantação de R$ 141.725,00</span> reflete esse compromisso com a excelência e a entrega de valor real para o Hospital Madalena Sofia.</p>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Slide 10: Resultados Esperados -->
+        <div class="slide" id="slide10">
+            <div class="slide-content">
+                <div class="slide-header">
+                    <h1 class="slide-title">Resultados Esperados</h1>
+                    <p class="slide-subtitle">O retorno do investimento em números e benefícios</p>
+                </div>
+                <div class="slide-body">
+                    <p>O retorno vai além do financeiro - é sobre <span class="highlight">eficiência, segurança assistencial e sustentabilidade operacional</span>.</p>
+                    
+                    <div class="phase-container">
+                        <div class="phase-box">
+                            <h3 class="phase-title">Operacionais</h3>
+                            <ul class="phase-list">
+                                <li>Redução de glosas e retrabalho</li>
+                                <li>Integração total dos setores</li>
+                                <li>Rastreabilidade completa dos processos</li>
+                                <li>Otimização do fluxo de pacientes</li>
+                            </ul>
+                        </div>
+                        
+                        <div class="phase-box">
+                            <h3 class="phase-title">Estratégicos</h3>
+                            <ul class="phase-list">
+                                <li>Indicadores gerenciais em tempo real</li>
+                                <li>Controle preciso de custos</li>
+                                <li>Base única de dados clínicos e financeiros</li>
+                                <li>Tomada de decisão baseada em dados</li>
+                            </ul>
+                        </div>
+                    </div>
+                    
+                    <div class="effort-highlight">
+                        <div class="effort-number">Investimento em Excelência</div>
+                        <div class="effort-label">Resultados que transformam a gestão hospitalar</div>
+                    </div>
+                    
+                    <p>Estudos mostram que hospitais com sistemas integrados como o SGH conseguem <span class="highlight">reduzir em até 30% as glosas</span> e <span class="highlight">aumentar em 25% a eficiência operacional</span>.</p>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Slide 11: Proposta de Valor -->
+        <div class="slide" id="slide11">
+            <div class="slide-content">
+                <div class="slide-header">
+                    <h1 class="slide-title">Nossa Proposta de Valor</h1>
+                    <p class="slide-subtitle">Diferenciais que fazem a diferença</p>
+                </div>
+                <div class="slide-body">
+                    <div class="phase-container">
+                        <div class="phase-box">
+                            <h3 class="phase-title">Não vendemos software</h3>
+                            <p>Entregamos <span class="highlight">resultados tangíveis</span> para a gestão hospitalar.</p>
+                        </div>
+                        
+                        <div class="phase-box">
+                            <h3 class="phase-title">Não fazemos implantação</h3>
+                            <p>Construímos <span class="highlight">parcerias de longo prazo</span> baseadas em confiança.</p>
+                        </div>
+                    </div>
+                    
+                    <div class="phase-container">
+                        <div class="phase-box">
+                            <h3 class="phase-title">Não oferecemos suporte</h3>
+                            <p>Garantimos <span class="highlight">tranquilidade operacional</span> 24/7.</p>
+                        </div>
+                        
+                        <div class="phase-box">
+                            <h3 class="phase-title">Não cobramos por horas</h3>
+                            <p>Investimos em <span class="highlight">soluções completas</span> com resultados garantidos.</p>
+                        </div>
+                    </div>
+                    
+                    <div class="effort-highlight">
+                        <div class="effort-number">816 Horas = Resultados</div>
+                        <div class="effort-label">Cada hora de trabalho dedicada se traduz em benefícios para o hospital</div>
+                    </div>
+                    
+                    <p>Nosso diferencial está no que acontece entre a assinatura do contrato e a entrega dos resultados: <span class="highlight">dedicação, experiência e compromisso com o sucesso do Madalena Sofia</span>.</p>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Slide 12: Próximos Passos -->
+        <div class="slide" id="slide12">
+            <div class="slide-content">
+                <div class="slide-header">
+                    <h1 class="slide-title">Próximos Passos</h1>
+                    <p class="slide-subtitle">Vamos começar essa jornada juntos?</p>
+                </div>
+                <div class="slide-body">
+                    <p>Estamos prontos para iniciar essa parceria de transformação. Mais do que fornecedores, queremos ser <span class="highlight">parceiros no crescimento e na excelência do Hospital Madalena Sofia</span>.</p>
+                    
+                    <div class="timeline">
+                        <div class="timeline-item">
+                            <div class="timeline-content">
+                                <h3 class="timeline-title">Assinatura do Aceite</h3>
+                                <p>Formalização da parceria e início do projeto.</p>
+                            </div>
+                        </div>
+                        
+                        <div class="timeline-item">
+                            <div class="timeline-content">
+                                <h3 class="timeline-title">Reunião de Kick-off</h3>
+                                <p>Alinhamento de expectativas e planejamento detalhado.</p>
+                            </div>
+                        </div>
+                        
+                        <div class="timeline-item">
+                            <div class="timeline-content">
+                                <h3 class="timeline-title">Definição do Comitê</h3>
+                                <p>Estabelecimento da equipe de projeto do hospital.</p>
+                            </div>
+                        </div>
+                        
+                        <div class="timeline-item">
+                            <div class="timeline-content">
+                                <h3 class="timeline-title">Início da Implantação</h3>
+                                <p>Início das atividades da Fase 1.</p>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="btn-container">
+                        <a href="#" class="btn btn-accent">Solicitar Proposta Detalhada</a>
+                        <a href="#" class="btn">Agendar Reunião Técnica</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Slide 13: Encerramento -->
+        <div class="slide" id="slide13">
+            <div class="slide-content">
+                <div class="slide-header">
+                    <h1 class="slide-title">Obrigado!</h1>
+                    <p class="slide-subtitle">Tecnologia para cuidar de quem cuida</p>
+                </div>
+                <div class="slide-body">
+                    <p>A <span class="highlight">SPDATA</span> não entrega sistemas — entrega <span class="highlight">resultados que transformam a gestão hospitalar</span>.</p>
+                    
+                    <div class="stats-container">
+                        <div class="stat-box">
+                            <div class="stat-number"><i class="fas fa-phone"></i></div>
+                            <div class="stat-label">(31) 3399-2500</div>
+                        </div>
+                        <div class="stat-box">
+                            <div class="stat-number"><i class="fas fa-envelope"></i></div>
+                            <div class="stat-label">spdata@spdata.com.br</div>
+                        </div>
+                        <div class="stat-box">
+                            <div class="stat-number"><i class="fas fa-globe"></i></div>
+                            <div class="stat-label">spdata.com.br</div>
+                        </div>
+                    </div>
+                    
+                    <div class="contact-info">
+                        <p>Estamos à disposição para esclarecer qualquer dúvida e, principalmente, para fazer acontecer essa parceria de sucesso!</p>
+                    </div>
+                    
+                    <div class="btn-container">
+                        <a href="https://alex-2020-pr.github.io/Projeto-Hosp.Madalena-Sofia/" target="_blank" class="btn">Ver Proposta Completa</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <div class="navigation">
+        <div class="nav-btn" id="prev-btn"><i class="fas fa-chevron-left"></i></div>
+        <div class="nav-btn" id="next-btn"><i class="fas fa-chevron-right"></i></div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const slides = document.querySelectorAll('.slide');
+            const prevBtn = document.getElementById('prev-btn');
+            const nextBtn = document.getElementById('next-btn');
+            const progressBar = document.querySelector('.progress-bar');
+            let currentSlide = 0;
+            
+            // Initialize first slide
+            showSlide(currentSlide);
+            
+            // Next slide function
+            function nextSlide() {
+                if (currentSlide < slides.length - 1) {
+                    currentSlide++;
+                    showSlide(currentSlide);
+                }
+            }
+            
+            // Previous slide function
+            function prevSlide() {
+                if (currentSlide > 0) {
+                    currentSlide--;
+                    showSlide(currentSlide);
+                }
+            }
+            
+            // Show specific slide
+            function showSlide(n) {
+                // Hide all slides
+                slides.forEach(slide => {
+                    slide.classList.remove('active');
+                });
+                
+                // Show current slide
+                slides[n].classList.add('active');
+                
+                // Update progress bar
+                progressBar.style.width = `${(n / (slides.length - 1)) * 100}%`;
+                
+                // Scroll to top of slide
+                window.scrollTo(0, 0);
+            }
+            
+            // Event listeners for buttons
+            nextBtn.addEventListener('click', nextSlide);
+            prevBtn.addEventListener('click', prevSlide);
+            
+            // Keyboard navigation
+            document.addEventListener('keydown', function(e) {
+                if (e.key === 'ArrowRight') {
+                    nextSlide();
+                } else if (e.key === 'ArrowLeft') {
+                    prevSlide();
+                }
+            });
+            
+            // Swipe support for touch devices
+            let touchStartX = 0;
+            let touchEndX = 0;
+            
+            document.addEventListener('touchstart', function(e) {
+                touchStartX = e.changedTouches[0].screenX;
+            });
+            
+            document.addEventListener('touchend', function(e) {
+                touchEndX = e.changedTouches[0].screenX;
+                handleSwipe();
+            });
+            
+            function handleSwipe() {
+                const swipeThreshold = 50;
+                
+                if (touchEndX < touchStartX - swipeThreshold) {
+                    nextSlide();
+                }
+                
+                if (touchEndX > touchStartX + swipeThreshold) {
+                    prevSlide();
+                }
+            }
+        });
+    </script>
+</body>
+</html>
